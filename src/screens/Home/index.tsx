@@ -30,15 +30,25 @@ export function Home() {
 
   async function loadData() {
     const dataKey = '@savepass:logins';
-    // Get asyncStorage data, use setSearchListData and setData
+    
+    const searchList = await AsyncStorage.getItem(dataKey);
+
+    const searchListFormatted = JSON.parse(searchList!);
+
+    setSearchListData(searchListFormatted);
+    setData(searchListFormatted);
   }
 
   function handleFilterLoginData() {
-    // Filter results inside data, save with setSearchListData
+    if (searchText === "")
+      return;
+
+    const filter = data.filter(login => login.service_name === searchText);
+    setSearchListData(filter);
   }
 
   function handleChangeInputText(text: string) {
-    // Update searchText value
+    setSearchText(text);
   }
 
   useFocusEffect(useCallback(() => {
@@ -67,7 +77,7 @@ export function Home() {
         <Metadata>
           <Title>Suas senhas</Title>
           <TotalPassCount>
-            {searchListData.length
+            {searchListData?.length
               ? `${`${searchListData.length}`.padStart(2, '0')} ao total`
               : 'Nada a ser exibido'
             }
